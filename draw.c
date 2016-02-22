@@ -11,6 +11,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   printf("y1: %d\n", y1);
   printf("x0: %d\n", x0);
   printf("x1: %d\n", x1);
+  
   float m = (y1 - y0)/(x1 - x0);
   printf("slope: %f\n", m);
   int x = x0; int y = y0;
