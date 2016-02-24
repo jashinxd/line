@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -9,14 +10,24 @@
 void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   float m = (float)(y1 - y0)/(float)(x1 - x0);
   int x = x0; int y = y0; int A = y1 - y0; int B = -(x1 - x0);
-  int goalX = x1; int goalY = y1;
+  int goalX = x1; int goalY = y1; int d;
   if (x0 > x1) {
     x = x1; y = y1; A = y0 - y1; B = -(x0 - x1);
     goalX = x0; goalY = y0;
   }
-  printf("slope: %f", m);
-  if (m > 0 && m <= 1) {
-    int d = 2 * A + B;
+  //printf("slope: %f\n", m);
+  if (m == 0) {
+    while (x <= goalX) {
+      plot(s, c, x, y);
+      x+=1;
+    }
+  } else if (isinf(m)) {
+    while (y <= goalY) {
+      plot(s, c, x, y);
+      y+=1;
+    }
+  } else if (m > 0 && m <= 1) {
+    d = 2 * A + B;
     while (x <= goalX) {
       plot(s, c, x, y);
       if (d > 0) {
@@ -27,7 +38,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
       d += 2 * A;
     }
   } else if (m > 1) {
-    int d = A + 2 * B;
+    d = A + 2 * B;
     while (y <= goalY) {
       plot(s, c, x, y);
       if (d < 0) {
@@ -36,6 +47,28 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
       }
       y += 1;
       d += 2 * B;
+    }
+  } else if (m < 0 && m >= -1) {
+    d = 2 * A - B;
+    while (x <= goalX) {
+      plot(s, c, x, y);
+      if (d < 0) { 
+	y -= 1;
+	d -= 2 * B;
+      }
+      x += 1; 
+      d += 2 * A; 
+    }
+  } else if (m < -1) {
+    d = A - 2 * B;
+    while (y >= goalY) {
+      plot(s, c, x, y);
+      if (d < 0) { 
+	x += 1;
+	d -= 2 * A;
+      }
+      y -= 1; 
+      d += 2 * B; 
     }
   }
 }
